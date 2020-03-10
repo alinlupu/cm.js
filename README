@@ -1,0 +1,13 @@
+DEVELOPMENT RULES
+
+1. use features supported by default by:
+	chrome 51+
+	firefox 54+
+	edge 14+
+	safari 10+
+	opera 38+
+
+	do not use:
+		es6 class
+			
+2. if params > 3, use params obj = {}
