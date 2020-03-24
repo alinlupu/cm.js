@@ -6,7 +6,6 @@
  * 3 - CANVAS3D
 */
 var Container = function() {
-	var self = this;
 	var _w = 0;
 	var _h = 0;
 	var _x = 0;
@@ -81,7 +80,7 @@ var Container = function() {
 		_el.style.top = ystr;
 	}
 
-	self.init = ({
+	this.init = ({
 		id = "",
 		type = 0,
 		width = 300,
@@ -104,7 +103,7 @@ var Container = function() {
 		_pel.appendChild( _el );
 	}
 	
-	self.update = ({
+	this.update = ({
 		width = _w,
 		height = _h,
 		x = _x,
@@ -137,7 +136,7 @@ var Container = function() {
 		updateElement();
 	}
 
-	self.flip = () => {
+	this.flip = () => {
 		if( _flippable ) {	
 			let vb = _el.getAttribute( "viewBox")
 			if( vb ) {
@@ -145,7 +144,7 @@ var Container = function() {
 				_el.setAttribute( "viewBox", `${vb[0]} ${vb[1]} ${vb[3]} ${vb[2]}` );
 				console.log( _el.getAttribute( "viewBox" ) );
 			}
-			self.update({
+			this.update({
 				width: _h,
 				height: _w,
 				x: _y,
@@ -154,7 +153,7 @@ var Container = function() {
 		}
 	}
 
-	self.render = ({
+	this.render = ({
 		drawFunc = null		
 	}={}) => {
 		_el.style.visibility = "visible";
@@ -163,17 +162,16 @@ var Container = function() {
 }
 
 var ContainerManager = function() {
-	var self = this;
 	var _width = 0;
 	var _height = 0;
 	var _containers = [];
 	
-	self.flipped = false;
-	self.create = ( width, height ) => {
+	this.flipped = false;
+	this.create = ( width, height ) => {
 		_width = width;
 		_height = height;	
 	}
-	self.addContainer = ( params ) => {
+	this.addContainer = ( params ) => {
 		let container = new Container();
 		if( !params.width ) params.width = _width;
 		if( !params.height ) params.height = _height; 
@@ -181,13 +179,13 @@ var ContainerManager = function() {
 		container.render({ drawFunc: params.drawFunc });
 		_containers.push( container );
 	}
-	self.flip = () => {
-		self.flipped = !self.flipped;
+	this.flip = () => {
+		this.flipped = !this.flipped;
 		_containers.forEach( (c) => {
 			c.flip();
 		});
 	}
-	self.resize = ({ 
+	this.resize = ({ 
 		width = 0, 
 		height = 0 }) => {
 		
@@ -203,18 +201,18 @@ var ContainerManager = function() {
 }
 
 var LayoutManager = function() {
-	var self = this;
-	self.resizeFunc = null;
-	self.initSize = () => {
-		self.width = window.innerWidth;
-		self.height = window.innerHeight;
+
+	this.resizeFunc = null;
+	this.initSize = () => {
+		this.width = window.innerWidth;
+		this.height = window.innerHeight;
 	}
-	self.resize = () => {
-		self.initSize();
-		if( self.resizeFunc ) self.resizeFunc();
-		document.body.onresize = self.resize;
+	this.resize = () => {
+		this.initSize();
+		if( this.resizeFunc ) this.resizeFunc();
+		document.body.onresize = this.resize;
 	}
-	self.initSize();
+	this.initSize();
 }
 
 var lm = new LayoutManager();
