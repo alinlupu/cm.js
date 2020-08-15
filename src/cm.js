@@ -5,7 +5,7 @@
  * 2 - CANVAS2D,
  * 3 - CANVAS3D
 */
-var Container = function() {
+const Container = function() {
 	var _w = 0;
 	var _h = 0;
 	var _x = 0;
@@ -17,7 +17,7 @@ var Container = function() {
 	var _pel = null;
 	var _flippable = 1;
 	
-	var createElement = () => {
+	const createElement = () => {
 		let _svgNS = "http://www.w3.org/2000/svg";
 		let elexists = document.getElementById( _id );
 		if( elexists ) {
@@ -47,7 +47,7 @@ var Container = function() {
 		_el.style.visibility = "hidden";
 		_el.style.position = "absolute";
 	}
-	var updateElement = () => {
+	const updateElement = () => {
 		let calcw = _w;
 		let calch = _h;
 		let calcy = _y;
@@ -100,7 +100,9 @@ var Container = function() {
 		_flippable = flippable;
 		createElement();
 		updateElement();		
-		_pel.appendChild( _el );
+		if( _pel ) {
+			_pel.appendChild( _el );
+		}
 	}
 	
 	this.update = ({
@@ -138,12 +140,14 @@ var Container = function() {
 
 	this.flip = () => {
 		if( _flippable ) {	
+		/*
 			let vb = _el.getAttribute( "viewBox")
 			if( vb ) {
 				vb = vb.split( ' ' );	
 				_el.setAttribute( "viewBox", `${vb[0]} ${vb[1]} ${vb[3]} ${vb[2]}` );
 				console.log( _el.getAttribute( "viewBox" ) );
 			}
+			*/
 			this.update({
 				width: _h,
 				height: _w,
@@ -151,6 +155,10 @@ var Container = function() {
 				y: _x
 			});
 		}
+	}
+
+	this.getId = () => {
+		return _id;
 	}
 
 	this.render = ({
@@ -185,7 +193,24 @@ var ContainerManager = function() {
 			c.flip();
 		});
 	}
-	this.resize = ({ 
+	this.resize = ({
+		id = null,
+		new_x = null,
+		new_y = null,
+		new_w = null,
+		new_h = null,
+		}) => {
+		
+		_containers.forEach( (c) => {
+			if( id && c.getId() == id ) {
+				if( new_x ) c.update({ x: new_x }); 
+				if( new_y ) c.update({ y: new_y }); 
+				if( new_w ) c.update({ width: new_w }); 
+				if( new_h ) c.update({ height: new_h }); 
+			}
+		});
+	}
+	this.resizeAll = ({
 		width = 0, 
 		height = 0 }) => {
 		
@@ -201,11 +226,23 @@ var ContainerManager = function() {
 }
 
 var LayoutManager = function() {
-
 	this.resizeFunc = null;
 	this.initSize = () => {
-		this.width = window.innerWidth;
-		this.height = window.innerHeight;
+		let win = window,
+			doc = document,
+			docElem = doc.documentElement,
+			body = doc.getElementsByTagName('body')[0],
+			userAgent = navigator.userAgent || navigator.vendor || window.opera,
+			x =  win.innerWidth || docElem.clientWidth || body.clientWidth,
+			y =  win.innerHeight || docElem.clientHeight|| body.clientHeight;
+		
+		if ( /android/i.test( userAgent )) {
+			//x = win.screen.width;
+			//y = win.screen.height;
+		}
+
+		this.width = x;
+		this.height = y;
 	}
 	this.resize = () => {
 		this.initSize();
@@ -238,6 +275,6 @@ cm.addContainer({
 */
 
 lm.resizeFunc = () => {
-	cm.resize({ width: lm.width, height: lm.height });
+	cm.resizeAll({ width: lm.width, height: lm.height });
 }
 document.body.onresize = lm.resize;
