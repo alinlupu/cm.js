@@ -169,7 +169,7 @@ const Container = function() {
 	}
 }
 
-var ContainerManager = function() {
+const ContainerManager = function() {
 	var _width = 0;
 	var _height = 0;
 	var _containers = [];
@@ -225,7 +225,7 @@ var ContainerManager = function() {
 	}
 }
 
-var LayoutManager = function() {
+const LayoutManager = function() {
 	this.resizeFunc = null;
 	this.initSize = () => {
 		let win = window,
