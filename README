@@ -9,5 +9,6 @@ DEVELOPMENT RULES
 
 	do not use:
 		es6 class
+		I prefer not using class syntax because it is not fully supported by modern browsers yet
 			
 2. if params > 3, use params obj = {}
