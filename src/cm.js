@@ -100,7 +100,10 @@ const Container = function() {
 		_flippable = flippable;
 		createElement();
 		updateElement();		
-		if( _pel ) {
+		if( typeof( _pel ) == "string" ) {
+			_pel = document.getElementById( _pel );	
+			_pel.appendChild( _el );
+		} else {
 			_pel.appendChild( _el );
 		}
 	}
@@ -213,7 +216,6 @@ const ContainerManager = function() {
 	this.resizeAll = ({
 		width = 0, 
 		height = 0 }) => {
-		
 		_containers.forEach( (c) => {
 			c.update({
 				x: { x: width },
